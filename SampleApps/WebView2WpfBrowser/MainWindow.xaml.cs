@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -229,6 +230,7 @@ namespace WebView2WpfBrowser
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             await InitializeWebView();
+            webView.CoreWebView2.ContextMenuRequested += WebView_ContextMenuRequested;
         }
 
         async System.Threading.Tasks.Task InitializeWebView()
@@ -1120,58 +1122,56 @@ namespace WebView2WpfBrowser
 
         private CoreWebView2ContextMenuItem displayUriParentContextMenuItem = null;
 
+        private bool isFirstTime = true;
+        private Stream firstIcon;
+        private Stream secondIcon;
+
         // <CustomContextMenu>
         void WebView_ContextMenuRequested(
               object sender,
               CoreWebView2ContextMenuRequestedEventArgs args)
         {
             IList<CoreWebView2ContextMenuItem> menuList = args.MenuItems;
-            CoreWebView2ContextMenuTargetKind context = args.ContextMenuTarget.Kind;
-            // Using custom context menu UI
-            if (context == CoreWebView2ContextMenuTargetKind.SelectedText)
-            {
-                CoreWebView2Deferral deferral = args.GetDeferral();
-                args.Handled = true;
-                ContextMenu cm = new ContextMenu();
-                cm.Closed += (s, ex) => deferral.Complete();
-                PopulateContextMenu(args, menuList, cm);
-                cm.IsOpen = true;
-            }
-            // Remove item from WebView context menu
-            else if (context == CoreWebView2ContextMenuTargetKind.Image)
-            {
-                /// removes the last item in the collection
-                menuList.RemoveAt(menuList.Count - 1);
-            }
-            // Add item to WebView context menu
-            else if (context == CoreWebView2ContextMenuTargetKind.Page)
-            {
-                // Created context menu items should be reused.
-                if (displayUriParentContextMenuItem == null)
-                {
-                    CoreWebView2ContextMenuItem subItem =
-                    webView.CoreWebView2.Environment.CreateContextMenuItem(
-                        "Display Page Uri", null,
-                        CoreWebView2ContextMenuItemKind.Command);
-                    subItem.CustomItemSelected += delegate (object send, Object ex)
-                    {
-                        string pageUrl = args.ContextMenuTarget.PageUri;
-                        System.Threading.SynchronizationContext.Current.Post((_) =>
-                        {
-                            MessageBox.Show(pageUrl, "Display Page Uri", MessageBoxButton.YesNo);
-                        }, null);
-                    };
-                    displayUriParentContextMenuItem =
-                      webView.CoreWebView2.Environment.CreateContextMenuItem(
-                          "New Submenu", null,
-                          CoreWebView2ContextMenuItemKind.Submenu);
-                    IList<CoreWebView2ContextMenuItem> submenuList = displayUriParentContextMenuItem.Children;
-                    submenuList.Insert(0, subItem);
-                }
 
-                menuList.Insert(menuList.Count, displayUriParentContextMenuItem);
+            string label;
+            Stream icon;
+            if (isFirstTime)
+            {
+                isFirstTime = false;
+                label = "First Item";
+                icon = GetIcon("cat1", ref firstIcon);
             }
+            else
+            {
+                label = "Second Item";
+                icon = GetIcon("cat2", ref secondIcon);
+            }
+
+            var subItem = webView.CoreWebView2.Environment.CreateContextMenuItem(label, icon,
+                    CoreWebView2ContextMenuItemKind.Command);
+            menuList.Add(subItem);
         }
+
+        private Stream GetIcon(string name, ref Stream icon)
+        {
+            icon ??= Consts.UseIcon
+                ? (Consts.UseIconFromResources
+                    ? Assembly.GetExecutingAssembly().GetManifestResourceStream($"WebView2WpfBrowser.assets.{name}.png")
+                    : File.OpenRead($".\\assets\\{name}.png"))
+                : null;
+
+            var localIcon = icon;
+            if (Consts.CopyIcon && icon != null)
+            {
+                var copy = new MemoryStream();
+                icon.Seek(0, SeekOrigin.Begin);
+                icon.CopyTo(copy);
+                return copy;
+            }
+
+            return icon;
+        }
+
         // </CustomContextMenu>
 
         void PopulateContextMenu(CoreWebView2ContextMenuRequestedEventArgs args,
@@ -1976,18 +1976,7 @@ namespace WebView2WpfBrowser
 
         private string GetStartPageUri(CoreWebView2 webView2)
         {
-            string uri = "https://appassets.example/AppStartPage.html";
-            if (webView2 == null)
-            {
-                return uri;
-            }
-            string sdkBuildVersion = GetSdkBuildVersion(),
-                   runtimeVersion = GetRuntimeVersion(webView2),
-                   appPath = GetAppPath(),
-                   runtimePath = GetRuntimePath(webView2);
-            string newUri = $"{uri}?sdkBuild={sdkBuildVersion}&runtimeVersion={runtimeVersion}" +
-                $"&appPath={appPath}&runtimePath={runtimePath}";
-            return newUri;
+            return "https://www.w3schools.com/tags/tryit.asp?filename=tryhtml_textarea";
         }
 
         Action OnWebViewFirstInitialized;

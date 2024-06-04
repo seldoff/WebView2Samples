@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFrameworks>netcoreapp3.0;net462;net6.0-windows</TargetFrameworks>
+    <TargetFrameworks>net6.0-windows;net8.0-windows</TargetFrameworks>
     <UseWPF>true</UseWPF>
     <Authors>Hybrid Application Team</Authors>
     <Company>Microsoft</Company>
@@ -61,7 +61,20 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2584-prerelease" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2535.41" />
 	<PackageReference Include="System.ValueTuple" Version="4.5.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="assets\Search.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="assets\cat1.png" />
+    <EmbeddedResource Include="assets\cat1.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="assets\cat2.png" />
+    <EmbeddedResource Include="assets\cat2.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>
