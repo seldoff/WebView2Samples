@@ -2163,7 +2163,7 @@ namespace WebView2WpfBrowser
 
         private string GetStartPageUri(CoreWebView2 webView2)
         {
-            string uri = "https://appassets.example/AppStartPage.html";
+            string uri = "edge://serviceworker-internals/";
             if (webView2 == null)
             {
                 return uri;

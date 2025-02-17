@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -11,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Microsoft.Web.WebView2.Core;
+using Path = System.IO.Path;
 
 namespace WebView2WpfBrowser
 {
@@ -98,10 +100,11 @@ namespace WebView2WpfBrowser
 
         private async System.Threading.Tasks.Task ExtensionsAddAsync(object sender, RoutedEventArgs e)
         {
+            var path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "extension");
             var dialog = new TextInputDialog(
                 title: "Add extension",
                 description: "Enter the absolute Windows file path to the unpackaged browser extension",
-                defaultInput: "");
+                defaultInput: path);
             if (dialog.ShowDialog() == true)
             {
                 try

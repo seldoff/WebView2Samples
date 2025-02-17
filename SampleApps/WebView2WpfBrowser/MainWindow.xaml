@@ -62,6 +62,7 @@ found in the LICENSE file.
         <CommandBinding Command="{x:Static local:MainWindow.SetDefaultDownloadPathCommand}" Executed="SetDefaultDownloadPathCmdExecuted" CanExecute="CoreWebView2RequiringCmdsCanExecute"/>
         <CommandBinding Command="{x:Static local:MainWindow.CreateDownloadsButtonCommand}" Executed="CreateDownloadsButtonCmdExecuted" CanExecute="CoreWebView2RequiringCmdsCanExecute"/>
         <CommandBinding Command="{x:Static local:MainWindow.ShowExtensionsWindowCommand}" Executed="ShowExtensionsWindowCmdExecuted" CanExecute="CoreWebView2RequiringCmdsCanExecute"/>
+        <CommandBinding Command="{x:Static local:MainWindow.ExtensionsCommand}" Executed="ExtensionsCommandExecuted" CanExecute="CoreWebView2RequiringCmdsCanExecute"/>
         <CommandBinding Command="{x:Static local:MainWindow.ToggleMuteStateCommand}" Executed="ToggleMuteStateCmdExecuted" CanExecute="CoreWebView2RequiringCmdsCanExecute"/>
         <CommandBinding Command="{x:Static local:MainWindow.PrintToPdfCommand}" Executed="PrintToPdfCmdExecuted" CanExecute="CoreWebView2RequiringCmdsCanExecute"/>
         <CommandBinding Command="{x:Static local:MainWindow.PinchZoomCommand}" Executed="PinchZoomCmdExecuted" CanExecute="CoreWebView2RequiringCmdsCanExecute"/>
@@ -168,6 +169,7 @@ found in the LICENSE file.
                 <!---TODO-->
             </MenuItem>
             <MenuItem Header="S_ettings">
+                <MenuItem Header="Enable Extensions" Command="{x:Static local:MainWindow.ExtensionsCommand}"/>
                 <MenuItem Header="_Server Certificate Error">
                     <MenuItem Header="_Toggle Custom Server Certificate Support" Command="{x:Static local:MainWindow.CustomServerCertificateSupportCommand}"/>
                     <MenuItem Header="_Clear Server Certificate Error Actions" Command="{x:Static local:MainWindow.ClearServerCertificateErrorActionsCommand}"/>
