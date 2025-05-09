@@ -302,12 +302,37 @@ namespace WebView2WpfBrowser
         {
             if (this.CreationProperties != null)
             {
-                webView2.CreationProperties = this.CreationProperties;
+                webView2.CreationProperties = new CoreWebView2CreationProperties { BrowserExecutableFolder = "C:\\Users\\alex\\ddg\\windows-browser\\WindowsBrowser\\bin\\x64\\Debug\\net8.0-windows10.0.19041.0\\WebView2" };
             }
             AttachControlEventHandlers(webView2);
             // Set background transparent
             webView2.DefaultBackgroundColor = System.Drawing.Color.Transparent;
             await webView2.EnsureCoreWebView2Async();
+
+            // This will print a message every second for wikipedia.org, but will only print a
+            // single message for youtube.com.
+            webView2.CoreWebView2.WebMessageReceived += (sender, args) =>
+                Debug.WriteLine("WebMessageReceived: " + args.WebMessageAsJson);
+
+            const string script = """
+                                  (function () {
+                                      if (!window.chrome || !window.chrome.webview) {
+                                          console.log("WebView2 not available");
+                                          return;
+                                      }
+                                      
+                                      let originalWindowsInteropPostMessage = window.chrome.webview.postMessage;
+                                  
+                                      
+                                      console.log("Initial message");
+                                      originalWindowsInteropPostMessage({Initial: true});
+                                      setInterval(() => {
+                                            console.log("Ping");
+                                          originalWindowsInteropPostMessage({Ping: true});
+                                      }, 1000);
+                                  })();
+                                  """;
+            await webView2.CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync(script);
         }
 
         // In general, re-initializing a WebView2 involves creating and initializing a new WebView2, and then

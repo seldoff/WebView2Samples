@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFrameworks>netcoreapp3.0;net462;net6.0-windows</TargetFrameworks>
+    <TargetFramework>net9.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <Authors>Hybrid Application Team</Authors>
     <Company>Microsoft</Company>
@@ -9,6 +9,7 @@
     <Copyright>Copyright ©2020</Copyright>
     <NoWin32Manifest>true</NoWin32Manifest>
     <Configurations>Debug Stable APIs;Release Stable APIs;Debug Experimental APIs;Release Experimental APIs</Configurations>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)'=='Debug Experimental APIs'">
 	<DefineConstants>USE_WEBVIEW2_EXPERIMENTAL</DefineConstants>
