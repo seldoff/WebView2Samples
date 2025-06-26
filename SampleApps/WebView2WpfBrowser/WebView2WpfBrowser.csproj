@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFrameworks>netcoreapp3.0;net462;net6.0-windows</TargetFrameworks>
+    <TargetFramework>net9.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <Authors>Hybrid Application Team</Authors>
     <Company>Microsoft</Company>
@@ -62,6 +62,13 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3116-prerelease" />
+    <PackageReference Include="System.Reactive.Linq" Version="6.0.1" />
 	<PackageReference Include="System.ValueTuple" Version="4.5.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Extension\index.js" />
+    <EmbeddedResource Include="Extension\index.js" />
+    <None Remove="Extension\manifest.json" />
+    <EmbeddedResource Include="Extension\manifest.json" />
   </ItemGroup>
 </Project>

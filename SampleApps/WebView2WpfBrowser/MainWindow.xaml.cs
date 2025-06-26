@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -27,6 +28,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
+using Path = System.IO.Path;
 
 namespace WebView2WpfBrowser
 {
@@ -302,6 +304,12 @@ namespace WebView2WpfBrowser
         {
             if (this.CreationProperties != null)
             {
+                const string ddgFolder =
+                    "C:\\Users\\alex\\ddg\\windows-browser\\WindowsBrowser\\bin\\x64\\Debug\\net8.0-windows10.0.19041.0";
+                this.CreationProperties.BrowserExecutableFolder = Path.Combine(ddgFolder, "WebView2");
+                this.CreationProperties.UserDataFolder = Path.Combine(ddgFolder, "DuckDuckGo\\WindowsBrowser\\EBWebView");
+                this.userDataFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                this.CreationProperties.AreBrowserExtensionsEnabled = true;
                 webView2.CreationProperties = this.CreationProperties;
             }
             AttachControlEventHandlers(webView2);
@@ -3747,6 +3755,7 @@ namespace WebView2WpfBrowser
 
         // <ScreenCaptureStarting0>
         private bool isScreenCaptureEnabled = true;
+        private string userDataFolder;
 
         void WebView_ScreenCaptureStarting(object sender, CoreWebView2ScreenCaptureStartingEventArgs args)
         {
@@ -4188,5 +4197,14 @@ private void FindObject_ActiveMatchIndexChanged(object sender, object e)
 }
 #endif
 
+        private int counter = 1;
+        private async void MenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            Title = "BURNING";
+            var extension = new BurnExtension(webView2XamlElement.CoreWebView2, Path.Combine(this.userDataFolder, "BurnExtension"));
+            await extension.Burn(null, []);
+            Title = $"DONE #{counter}";
+            counter++;
+        }
     }
 }
